@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>小火箭去广告配置生成器 · 在线生成 Shadowrocket 模块</title>
+<meta name="description" content="小火箭（Shadowrocket）去广告配置在线生成。勾选常用 App，一键生成专属去广告模块，支持知乎、B站、微博、小红书、网易云音乐、高德地图、百度贴吧等 46 款应用。免越狱，导入即用。">
+<meta name="keywords" content="小火箭去广告,Shadowrocket去广告,小火箭模块,shadowrocket配置,iOS去广告,开屏广告,净化配置,规则生成器,B站去广告,知乎去广告,小红书去广告,微博去广告">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<meta name="theme-color" content="#4f46e5">
+<link rel="canonical" href="{{SITE_ORIGIN}}/">
+<link rel="alternate" hreflang="zh-CN" href="{{SITE_ORIGIN}}/">
+<link rel="alternate" hreflang="x-default" href="{{SITE_ORIGIN}}/">
+<meta property="og:title" content="小火箭去广告配置生成器">
+<meta property="og:description" content="勾选常用 App，一键生成 Shadowrocket 专属去广告模块。免费、免越狱、即生成即用。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="小火箭去广告配置生成器">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:url" content="{{SITE_ORIGIN}}/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%234f46e5'/%3E%3Cpath d='M16 6l3 8h8l-6.5 4.8 2.5 8.2L16 22l-7 5 2.5-8.2L5 14h8z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "小火箭去广告配置生成器",
+  "url": "{{SITE_ORIGIN}}/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "iOS",
+  "inLanguage": "zh-CN",
+  "description": "免费在线生成 Shadowrocket 小火箭去广告模块，支持 46 款常用应用。",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CNY"},
+  "featureList": ["按 App 勾选规则", "全量与合规双模式", "本地生成配置", "支持 Shadowrocket 导入"]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"这个小火箭去广告配置收费吗？","acceptedAnswer":{"@type":"Answer","text":"在线选择和生成模块完全免费，配置在浏览器本地完成。"}},
+    {"@type":"Question","name":"为什么导入模块后广告还在？","acceptedAnswer":{"@type":"Answer","text":"常见原因是没有安装并信任 CA 证书，或没有打开 HTTPS 解密。完成安装步骤后请强制退出目标 App 再重新打开。"}},
+    {"@type":"Question","name":"会不会收集我的设备或选择记录？","acceptedAnswer":{"@type":"Answer","text":"普通生成过程不上传选择；只有主动生成分享链接时，模块内容才会临时保存 90 天。"}},
+    {"@type":"Question","name":"所有 App 的广告都能完全去掉吗？","acceptedAnswer":{"@type":"Answer","text":"不能保证 100%。规则主要处理开屏、信息流和第三方广告 SDK，客户端交互和会员内容不在处理范围内。"}}
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#build">跳到配置生成器</a>
+
+<header>
+  <div class="wrap hd">
+    <div class="brand"><span class="dot"></span>小火箭去广告配置生成器<small>Shadowrocket</small></div>
+    <nav>
+      <a href="#build">生成配置</a>
+      <a href="/apps/">全部 App</a>
+      <a href="#how">安装教程</a>
+      <a href="#faq">常见问题</a>
+      <a class="nav-promo" href="https://www.11pa.dpdns.org/" target="_blank" rel="sponsored noopener noreferrer">真三网节点</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <span class="tag">免费 · 免越狱 · 在线生成</span>
+    <h1>自己勾选 App，<br>生成一份<em>专属的小火箭配置</em></h1>
+    <p>不用在几十个开源仓库里翻找。<b>小火箭（Shadowrocket）</b>用户选好常用的 App，一键生成可直接导入的去广告模块。</p>
+  </div>
+
+  <!-- ============ 机场推广 ============ -->
+  <aside aria-label="真三网优化机场推广">
+    <a class="promo-card" href="https://www.11pa.dpdns.org/" target="_blank" rel="sponsored noopener noreferrer">
+      <span class="promo-kicker"><span>推广</span> 小火箭用户专享线路</span>
+      <span class="promo-copy">
+        <strong>真三网优化 AI 线路</strong>
+        <span>独家朝鲜节点 · AI 智能选线 · 多地区高速入口</span>
+      </span>
+      <span class="promo-badges" aria-hidden="true">
+        <span>三网优化</span><span>AI 选线</span><span>朝鲜节点</span>
+      </span>
+      <span class="promo-action">点击直达</span>
+    </a>
+  </aside>
+
+  <!-- ============ 效果 ============ -->
+  <section>
+    <div class="ba">
+      <div class="side bad">
+        <h3>配置前</h3>
+        <ul>
+          <li>开屏广告 5 秒倒计时</li>
+          <li>手一抖就跳转到购物页</li>
+          <li>信息流里塞满“推广”</li>
+        </ul>
+      </div>
+      <div class="side good">
+        <h3>配置后</h3>
+        <ul>
+          <li>开屏直接进主界面</li>
+          <li>信息流清爽很多</li>
+          <li>页面上的推广横幅明显减少</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 可抓取的热门 App 内链 ============ -->
+  <section aria-labelledby="popular-apps-title">
+    <div class="sect-h">
+      <h2 id="popular-apps-title">热门 App 去广告配置</h2>
+      <a class="section-link" href="/apps/">查看全部 46 款</a>
+    </div>
+    <div class="related-grid popular-links">
+      <a href="/bilibili/">哔哩哔哩去广告配置</a>
+      <a href="/zhihu/">知乎去广告配置</a>
+      <a href="/xiaohongshu/">小红书去广告配置</a>
+      <a href="/weibo/">微博去广告配置</a>
+      <a href="/netease_music/">网易云音乐去广告配置</a>
+      <a href="/amap/">高德地图去广告配置</a>
+    </div>
+  </section>
+
+  <!-- ============ 生成 ============ -->
+  <section id="build">
+    <div class="sect-h">
+      <span class="step">第 1 步</span>
+      <h2>选择要净化的 App</h2>
+      <span class="hint" id="cnt" aria-live="polite">已选 0 个</span>
+    </div>
+
+    <div class="modes" id="modes">
+      <button type="button" class="mode on" data-mode="full" aria-pressed="true">
+        <b>全量模式</b>
+        <span>使用全部可用规则来源，覆盖面最广（46 款 App）。含 GPL 来源，自用无妨；若对外分发需按 GPL 开源。</span>
+      </button>
+      <button type="button" class="mode" data-mode="safe" aria-pressed="false">
+        <b>合规模式</b>
+        <span>只使用 MIT / Apache-2.0 许可的来源，生成结果可安全商用分发（16 个来源，覆盖 14 款 App）。</span>
+      </button>
+    </div>
+
+    <div class="bar" id="cats" style="margin-top:16px"></div>
+    <div class="bar" style="margin-top:-4px">
+      <button class="chip ghost" id="pickHot">热门一键选</button>
+      <button class="chip ghost" id="pickAll">全选</button>
+      <button class="chip ghost" id="clearAll">清空</button>
+    </div>
+
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section>
+    <div class="sect-h">
+      <span class="step">第 2 步</span>
+      <h2>生成配置模块</h2>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b id="s-apps">0</b><span>已选 App</span></div>
+      <div class="stat"><b id="s-rules">0</b><span>规则条数</span></div>
+      <div class="stat"><b id="s-size">0 KB</b><span>文件大小</span></div>
+    </div>
+
+    <button type="button" class="btn primary" id="gen" disabled>请先选择 App</button>
+
+    <div class="out" id="out">
+      <div class="head">
+        <span>已生成 · <b id="out-name">ios-clean.sgmodule</b></span>
+        <span id="out-meta"></span>
+      </div>
+      <pre id="preview"></pre>
+    </div>
+
+    <div class="row" id="acts" style="display:none">
+      <button type="button" class="btn sec" id="dl">下载模块文件</button>
+      <button type="button" class="btn sec" id="cp">复制全部内容</button>
+      <button type="button" class="btn sec" id="share" style="display:none">生成分享链接</button>
+    </div>
+
+    <div class="out" id="shareOut" style="margin-top:10px">
+      <div class="head"><span>分享链接已生成 · 90 天内有效</span><span>可直接发给别人导入</span></div>
+      <pre id="shareUrl" style="max-height:none;white-space:pre-wrap"></pre>
+    </div>
+
+    <div class="note info" id="licNote" style="display:none"></div>
+    <div class="note warn">
+      <b>生成后还需要 3 步才能生效</b>（导入模块 → 安装并信任证书 → 打开 HTTPS 解密）。
+      证书这步不能跳，不装证书的话只有域名级拦截生效，开屏广告是不会消失的。
+      <a href="#how">看下面的安装教程 →</a>
+    </div>
+  </section>
+
+  <!-- ============ 教程 ============ -->
+  <section id="how">
+    <div class="sect-h"><h2>小火箭安装教程</h2><span class="hint">约 3 分钟</span></div>
+    <ol class="steps">
+      <li>打开小火箭，进入 <b>「配置」→「模块」→ 右上角 ➕</b>，粘贴链接或选择文件下载，然后开启该模块的开关</li>
+      <li>回到 <b>「配置」</b>页，点<b>当前正在使用的配置文件</b>右侧的 <b>ⓘ</b> 图标 →「HTTPS 解密」→「证书」→ 点「生成新的 CA 证书」</li>
+      <li>紧接着点「安装证书」→ 跳转 Safari 后允许下载；再到系统<b>【设置】</b>顶部「已下载描述文件」→ 安装 → 输入锁屏密码
+        <small>提示"未验证"是正常的，继续安装</small></li>
+      <li class="key"><b>★ 系统【设置】→【通用】→【关于本机】→ 拉到最底 →【证书信任设置】→ 把 Shadowrocket 的开关打开</b>
+        <small>这一步 90% 的人会漏。开关必须是绿色的，否则前面全白配。</small></li>
+      <li>回到「配置」→ 配置文件 <b>ⓘ</b> →「HTTPS 解密」打开解密总开关；再回「首页」打开顶部总开关。三个开关都变绿就完成了</li>
+    </ol>
+    <div class="note ok">
+      <b>没效果？</b>多半是 App 有缓存。强制退出该 App（上滑关闭）后重新打开；仍不行就卸载重装一次，规则立刻生效。
+    </div>
+    <div class="note info">
+      <b>还没装小火箭？</b>Shadowrocket 是付费应用，且不在中国区 App Store 上架，需要用对应地区的 Apple ID 才能下载。
+      本站只提供配置模块，不提供软件本身。
+    </div>
+  </section>
+
+  <!-- ============ 边界说明 ============ -->
+  <section>
+    <div class="sect-h"><h2>说明与边界</h2><span class="hint">请先看清楚再动手</span></div>
+    <div class="ba">
+      <div class="side good">
+        <h3>能处理</h3>
+        <ul>
+          <li>主流 App 的开屏广告</li>
+          <li>信息流里的推广内容</li>
+          <li>网页广告、第三方广告 SDK</li>
+          <li>统计、埋点、追踪域名</li>
+        </ul>
+      </div>
+      <div class="side bad">
+        <h3>不承诺处理</h3>
+        <ul>
+          <li><b>「摇一摇」误触跳转</b>——属于客户端交互行为，任何规则方案都无法拦截</li>
+          <li>会员权益、付费内容解锁 —— 不在功能范围内</li>
+          <li>所有 App 的 100% 广告 —— 广告形式持续变化，规则需持续更新</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 常见问题 ============ -->
+  <section id="faq">
+    <div class="sect-h"><h2>常见问题</h2><span class="hint">开始前快速了解</span></div>
+    <div class="faq-list">
+      <details>
+        <summary>这个小火箭去广告配置收费吗？</summary>
+        <p>在线选择和生成模块完全免费，配置在你的浏览器本地完成。只有你主动使用机场线路或人工服务时，才会进入对应的第三方服务页面。</p>
+      </details>
+      <details>
+        <summary>为什么导入模块后广告还在？</summary>
+        <p>最常见原因是没有安装并信任 CA 证书，或没有打开「HTTPS 解密」。完成上面的 5 步后，强制退出目标 App 再重新打开。</p>
+      </details>
+      <details>
+        <summary>会不会收集我的设备或选择记录？</summary>
+        <p>普通生成过程不上传你的选择；只有主动点击「生成分享链接」时，生成的模块内容才会临时保存 90 天，内容不包含个人信息。</p>
+      </details>
+      <details>
+        <summary>所有 App 的广告都能完全去掉吗？</summary>
+        <p>不能保证 100%。规则更适合处理开屏、信息流和第三方广告 SDK；「摇一摇」等客户端交互以及会员付费内容不在处理范围内。</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section id="help">
+    <div class="cta cta-airport">
+      <span class="ad-label">推广</span>
+      <h2>配置好了，还差一条好线路？</h2>
+      <p>真三网优化 AI 线路，提供独家朝鲜节点与多地区高速入口。直接进入机场前端查看套餐和实时节点。</p>
+      <a class="btn primary" id="ctaBtn" href="https://www.11pa.dpdns.org/" target="_blank" rel="sponsored noopener noreferrer" style="max-width:280px;margin:0 auto;text-decoration:none">查看真三网节点</a>
+    </div>
+    <div class="note info" style="margin-top:14px">
+      去广告模块与机场线路是两项独立服务。你可以继续免费使用上面的生成器，不购买也不影响任何功能。
+    </div>
+  </section>
+
+  <footer>
+    <p>本站为<b>小火箭（Shadowrocket）</b>配置在线生成工具，生成的规则整合自以下开源项目：</p>
+    <p style="font-size:12px;line-height:2;color:#8a8a92">
+      app2smile/rules（MIT）· Maasea/sgmodule（Apache-2.0）· limbopro/Adblock4limbo（MIT）·
+      fmz200/wool_scripts（GPL-3.0）· blackmatrix7/ios_rule_script（GPL-2.0）
+    </p>
+    <p>各来源的许可类型会在生成结果中标注。GPL 来源的分发须遵循相应开源义务。</p>
+    <p>本站不提供 Shadowrocket 软件本身。除非你主动点击「生成分享链接」，否则本站不记录你在页面上的任何操作；
+      分享链接会把生成的配置内容临时存储 90 天，不含任何个人信息。</p>
+    <p>配置只作用于你自己的设备，可随时关闭开关恢复原状。</p>
+    <p><a href="/apps/">全部 App 去广告配置</a> · <a href="https://github.com/Leo-bot66/ios-clean-generator">GitHub 开源仓库</a></p>
+    <p><a href="https://www.11pa.dpdns.org/" target="_blank" rel="sponsored noopener noreferrer">真三网优化 AI 线路与独家朝鲜节点</a>（推广）</p>
+  </footer>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

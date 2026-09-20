@@ -1,0 +1,28 @@
+name: SEO and site checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Generate landing pages and sitemap
+        run: python 99_生成脚本/build_pages.py
+      - name: Validate SEO output
+        run: python 99_生成脚本/validate_site.py
+      - name: Check JavaScript syntax
+        run: |
+          node --check 01_网站源码/site/app.js
+          node --check 01_网站源码/worker/index.js
+      - name: Ensure generated files are committed
+        run: git diff --exit-code
+

@@ -1,0 +1,24 @@
+name = "ios-clean-generator"
+main = "worker/index.js"
+compatibility_date = "2026-09-01"
+
+# ---------- 静态资源（site 目录） ----------
+[assets]
+directory = "./site"
+binding = "ASSETS"
+# 所有请求先经过 Worker，用当前访问域名替换 canonical / sitemap 占位符。
+run_worker_first = true
+
+# ---------- 正式站点域名 ----------
+[[routes]]
+pattern = "s.tangping.icu"
+custom_domain = true
+
+# ---------- KV：用于「生成分享链接」 ----------
+# 未配置 KV 时，Worker 会自动降级（前端隐藏分享按钮），其余功能不受影响。
+# 创建方式： npx wrangler kv namespace create LINKS
+# 然后把输出的 id 填到下面，取消注释：
+#
+# [[kv_namespaces]]
+# binding = "LINKS"
+# id = "在这里填入你的 KV namespace id"

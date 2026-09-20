@@ -1,0 +1,16 @@
+*
+!.gitignore
+!README.md
+!.github/
+!.github/**
+!01_网站源码/
+!01_网站源码/**
+01_网站源码/.audit/
+01_网站源码/.wrangler/
+!06_许可与合规/
+!06_许可与合规/**
+!99_生成脚本/
+!99_生成脚本/build_pages.py
+!99_生成脚本/validate_site.py
+99_生成脚本/__pycache__/
+
