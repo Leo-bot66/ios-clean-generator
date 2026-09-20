@@ -120,7 +120,7 @@ def page_html(app: dict, apps: list[dict]) -> str:
 <meta property="og:locale" content="zh_CN">
 <meta property="og:url" content="{SITE_ORIGIN}/{app_id}/">
 <meta name="twitter:card" content="summary">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%234f46e5'/%3E%3Cpath d='M16 6l3 8h8l-6.5 4.8 2.5 8.2L16 22l-7 5 2.5-8.2L5 14h8z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/style.css">
 <script type="application/ld+json">{json_ld(app, description)}</script>
 </head>
@@ -257,7 +257,7 @@ def apps_index_html(apps: list[dict]) -> str:
 <meta property="og:locale" content="zh_CN">
 <meta property="og:url" content="{SITE_ORIGIN}/apps/">
 <meta name="twitter:card" content="summary">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%234f46e5'/%3E%3Cpath d='M16 6l3 8h8l-6.5 4.8 2.5 8.2L16 22l-7 5 2.5-8.2L5 14h8z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/style.css">
 <script type="application/ld+json">{item_list_json}</script>
 </head>
