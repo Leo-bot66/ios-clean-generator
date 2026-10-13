@@ -20,7 +20,8 @@
 │   └── data/modules.json     ← 模块数据（180 KB，46 款 App / 53 个来源）
 ├── worker/index.js           ← 分享短链 + SEO 绝对域名注入
 ├── wrangler.toml             ← Cloudflare 部署配置
-├── _测试_合并逻辑.js          ← 合并引擎冒烟测试
+├── test-merge.js              ← 合并引擎校验
+├── test-worker.js             ← 长期订阅与 Worker 校验
 └── README_部署指南.md         ← 本文件
 
 上级项目根还有：
@@ -133,13 +134,17 @@ const CONFIG = {
 
 ```bash
 cd "F:/newbee苹果去广告网站/99_生成脚本"
-"C:/Users/1/.workbuddy/binaries/python/versions/3.13.12/python.exe" build_data.py
+python sync_rules.py
 "C:/Users/1/.workbuddy/binaries/python/versions/3.13.12/python.exe" build_pages.py
 "C:/Users/1/.workbuddy/binaries/python/versions/3.13.12/python.exe" validate_site.py
 cd ../01_网站源码 && npx wrangler deploy
 ```
 
-要增删 App，改 `99_生成脚本/build_data.py` 里的 `APPS` 列表（每行：id、中文名、分类、图标、来源列表）。
+仓库自带每日自动同步工作流。它按 `upstreams.json` 与来源映射下载已配置的来源模块，固定本次上游提交版本、校验内容与外部引用后更新数据；失败时保留上一版。自动部署需要仓库 Secrets 中的 `CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ACCOUNT_ID`。
+
+长期订阅示例：`https://s.tangping.icu/rules/latest.sgmodule?apps=zhihu,bilibili&mode=full`。省略 `apps` 时使用全部可用应用；`mode=safe` 仅使用 MIT / Apache 来源。在小火箭的模块页面导入远程地址后，使用客户端的模块更新功能获取新规则。已下载文件及 90 天分享链接不会自动更新。
+
+网站显示规则版本和最近检查日期，超过 7 天未检查会提示。规则检查并不等同于真机效果验证。腾讯视频来源目前只有解密域名，没有有效广告拦截规则，已暂停选择。
 脚本内路径全部相对项目根，整个文件夹换位置也不用改。
 
 ---

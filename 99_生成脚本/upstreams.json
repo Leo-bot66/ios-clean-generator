@@ -1,0 +1,9 @@
+{
+  "repositories": {
+    "app2smile": {"repo": "app2smile/rules", "branch": "master", "prefix": "rules/"},
+    "Maasea": {"repo": "Maasea/sgmodule", "branch": "master", "prefix": "sgmodule/"},
+    "毒奶": {"repo": "limbopro/Adblock4limbo", "branch": "main", "prefix": "limbo/"},
+    "奶思": {"repo": "fmz200/wool_scripts", "branch": "main", "prefix": "", "modulePrefix": "Shadowrocket/module/"}
+  },
+  "overrides": {}
+}

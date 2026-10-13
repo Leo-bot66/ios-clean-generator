@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import html
 import json
-from datetime import date
 from pathlib import Path
 
 
@@ -36,6 +35,8 @@ def esc(value: object) -> str:
 
 
 def app_description(app: dict) -> str:
+    if app.get("available") is False:
+        return f"{app['name']}当前上游暂无可用去广告规则，本站已暂停生成该应用的配置。可查看更新状态、安装教程及其他应用的 Shadowrocket 模块。"
     pain = PAIN_BY_CATEGORY.get(app["cat"], "开屏广告、信息流推广和营销弹窗")
     return (
         f"免费在线生成 {app['name']} 去广告配置，针对{pain}进行净化。"
@@ -88,6 +89,8 @@ def json_ld(app: dict, description: str) -> str:
             ],
         },
     ]
+    if app.get("available") is False:
+        data = [item for item in data if item.get("@type") != "HowTo"]
     return json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
 
 
@@ -100,6 +103,13 @@ def page_html(app: dict, apps: list[dict]) -> str:
     related_html = "".join(
         f'<a href="/{esc(item["id"])}/">{esc(item["name"])}去广告配置</a>' for item in related
     )
+    intro = f"针对 {name} 常见的{pain}进行净化，在线生成可直接导入 Shadowrocket（小火箭）的专属模块。"
+    action = f"一键生成 {name} 去广告模块"
+    subscription = f'<a class="btn sec" href="/rules/latest.sgmodule?apps={app_id}&amp;mode=full">订阅最新模块</a>'
+    if app.get("available") is False:
+        intro = "当前上游暂无可用广告拦截规则，本站已暂停该应用的模块生成。保留此页用于查看状态；规则恢复后会重新开放。"
+        action = "查看其他可用 App"
+        subscription = '<span class="note warn">上游暂无可用规则</span>'
 
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -138,9 +148,10 @@ def page_html(app: dict, apps: list[dict]) -> str:
     <div class="breadcrumbs"><a href="/">首页</a> / <a href="/apps/">全部 App</a> / {name}去广告配置</div>
     <span class="tag">免费 · 免越狱 · 在线生成</span>
     <h1>{name}去广告配置</h1>
-    <p>针对 {name} 常见的{pain}进行净化，在线生成可直接导入 Shadowrocket（小火箭）的专属模块。</p>
+    <p>{intro}</p>
     <div class="landing-actions" id="generate">
-      <a class="btn primary" href="/?pick={app_id}#build">一键生成 {name} 去广告模块</a>
+      <a class="btn primary" href="/?pick={app_id}#build">{action}</a>
+      {subscription}
       <a class="btn sec" href="#install">查看安装步骤</a>
     </div>
   </div>
@@ -214,7 +225,7 @@ def apps_index_html(apps: list[dict]) -> str:
         f'''<section class="directory-group">
     <div class="sect-h"><h2>{esc(category)}类 App</h2><span class="hint">{len(items)} 款</span></div>
     <div class="directory-grid">{''.join(
-        f'<a href="/{esc(item["id"])}/"><span>{esc(item["emoji"])}</span><strong>{esc(item["name"])}去广告</strong><small>Shadowrocket 模块</small></a>'
+        f'<a href="/{esc(item["id"])}/"><span>{esc(item["emoji"])}</span><strong>{esc(item["name"])}去广告</strong><small>{"上游暂无可用规则" if item.get("available") is False else "Shadowrocket 模块"}</small></a>'
         for item in items
     )}</div>
   </section>'''
@@ -284,7 +295,8 @@ def apps_index_html(apps: list[dict]) -> str:
 
 
 def sitemap_xml(apps: list[dict]) -> str:
-    today = date.today().isoformat()
+    data = json.loads(DATA_FILE.read_text(encoding="utf-8"))
+    today = data.get("updatedAt", "2026-09-20")[:10]
     urls = [f"{SITE_ORIGIN}/", f"{SITE_ORIGIN}/apps/"] + [f"{SITE_ORIGIN}/{app['id']}/" for app in apps]
     entries = "\n".join(
         f"  <url><loc>{esc(url)}</loc><lastmod>{today}</lastmod></url>" for url in urls

@@ -1,0 +1,59 @@
+name: Daily rule maintenance
+
+on:
+  schedule:
+    - cron: '25 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rule-maintenance
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Update sources and check external dependencies
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python 99_生成脚本/sync_rules.py
+      - name: Generate and validate site
+        run: |
+          python 99_生成脚本/build_pages.py
+          python 99_生成脚本/validate_site.py
+          python -m unittest discover -s 99_生成脚本 -p 'test_*.py'
+          npm test --prefix 01_网站源码
+          node --check 01_网站源码/site/app.js
+      - name: Commit validated snapshot
+        run: |
+          git add 01_网站源码/site
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m '维护：同步已验证的去广告规则'
+            git push origin HEAD:main
+          fi
+      - name: Deploy when Cloudflare credentials are configured
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo '::error::Rules are synchronized in GitHub, but live deployment requires CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID repository secrets.'
+            exit 1
+          fi
+          cd 01_网站源码
+          npx --yes wrangler@4.149.0 deploy

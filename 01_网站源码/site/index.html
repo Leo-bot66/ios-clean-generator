@@ -136,7 +136,7 @@
     <div class="modes" id="modes">
       <button type="button" class="mode on" data-mode="full" aria-pressed="true">
         <b>全量模式</b>
-        <span>使用全部可用规则来源，覆盖面最广（46 款 App）。含 GPL 来源，自用无妨；若对外分发需按 GPL 开源。</span>
+        <span>使用当前全部可用规则。上游暂无可用规则的 App 会暂停选择。含 GPL 来源；若对外分发需按 GPL 开源。</span>
       </button>
       <button type="button" class="mode" data-mode="safe" aria-pressed="false">
         <b>合规模式</b>
@@ -144,6 +144,7 @@
       </button>
     </div>
 
+    <p class="note" id="ruleStatus" aria-live="polite">正在读取规则更新状态…</p>
     <div class="bar" id="cats" style="margin-top:16px"></div>
     <div class="bar" style="margin-top:-4px">
       <button class="chip ghost" id="pickHot">热门一键选</button>
@@ -179,6 +180,7 @@
     <div class="row" id="acts" style="display:none">
       <button type="button" class="btn sec" id="dl">下载模块文件</button>
       <button type="button" class="btn sec" id="cp">复制全部内容</button>
+      <button type="button" class="btn sec" id="subscribe">复制长期订阅地址</button>
       <button type="button" class="btn sec" id="share" style="display:none">生成分享链接</button>
     </div>
 
@@ -187,6 +189,7 @@
       <pre id="shareUrl" style="max-height:none;white-space:pre-wrap"></pre>
     </div>
 
+    <p class="note" id="subscribeNote" style="display:none">将长期订阅地址作为远程模块导入小火箭，开启客户端的模块更新或手动更新即可获取新规则。下载到本地的文件不会自动更新。</p>
     <div class="note info" id="licNote" style="display:none"></div>
     <div class="note warn">
       <b>生成后还需要 3 步才能生效</b>（导入模块 → 安装并信任证书 → 打开 HTTPS 解密）。
@@ -208,7 +211,7 @@
       <li>回到「配置」→ 配置文件 <b>ⓘ</b> →「HTTPS 解密」打开解密总开关；再回「首页」打开顶部总开关。三个开关都变绿就完成了</li>
     </ol>
     <div class="note ok">
-      <b>没效果？</b>多半是 App 有缓存。强制退出该 App（上滑关闭）后重新打开；仍不行就卸载重装一次，规则立刻生效。
+      <b>没效果？</b>先确认模块、HTTPS 解密和证书信任已启用，再强制退出该 App 后重新打开。App 版本和上游规则变化也会影响效果；可重新生成最新配置。
     </div>
     <div class="note info">
       <b>还没装小火箭？</b>Shadowrocket 是付费应用，且不在中国区 App Store 上架，需要用对应地区的 Apple ID 才能下载。
@@ -292,6 +295,6 @@
 
 </main>
 
-<script src="app.js"></script>
+<script type="module" src="/app.js"></script>
 </body>
 </html>

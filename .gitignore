@@ -1,5 +1,6 @@
 *
 !.gitignore
+!.gitattributes
 !README.md
 !.github/
 !.github/**
@@ -12,5 +13,8 @@
 !99_生成脚本/
 !99_生成脚本/build_pages.py
 !99_生成脚本/validate_site.py
+!99_生成脚本/sync_rules.py
+!99_生成脚本/test_sync_rules.py
+!99_生成脚本/upstreams.json
 99_生成脚本/__pycache__/
 

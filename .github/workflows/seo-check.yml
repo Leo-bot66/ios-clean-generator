@@ -23,6 +23,11 @@ jobs:
         run: |
           node --check 01_网站源码/site/app.js
           node --check 01_网站源码/worker/index.js
+          node --check 01_网站源码/site/merge-core.js
+      - name: Check rule parser and subscription behavior
+        run: |
+          python -m unittest discover -s 99_生成脚本 -p 'test_*.py'
+          npm test --prefix 01_网站源码
       - name: Ensure generated files are committed
         run: git diff --exit-code
 

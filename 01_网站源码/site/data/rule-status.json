@@ -1,0 +1,31 @@
+{
+  "updatedAt": "2026-10-13T04:43:27+00:00",
+  "checkedAt": "2026-10-13T04:51:11+00:00",
+  "apps": 46,
+  "sources": 53,
+  "availableApps": 45,
+  "externalResources": 51,
+  "upstreams": {
+    "app2smile": {
+      "repository": "app2smile/rules",
+      "commit": "df6366a7024e0b3f0aa3510c5b791eea6f3cba89",
+      "committedAt": "2026-03-04T09:07:19Z"
+    },
+    "Maasea": {
+      "repository": "Maasea/sgmodule",
+      "commit": "65075cdb388fc5e3094afd7e7314c67b243f3525",
+      "committedAt": "2026-07-19T08:33:52Z"
+    },
+    "毒奶": {
+      "repository": "limbopro/Adblock4limbo",
+      "commit": "c93752f9d5658c0ff956c02519354f6d421ebf02",
+      "committedAt": "2026-10-10T11:22:37Z"
+    },
+    "奶思": {
+      "repository": "fmz200/wool_scripts",
+      "commit": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
+      "committedAt": "2026-10-01T14:21:03Z"
+    }
+  },
+  "validation": "modules parsed and referenced resources reachable; device behavior not verified"
+}

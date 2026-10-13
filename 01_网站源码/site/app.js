@@ -1,3 +1,5 @@
+import { merge as mergeRules, eligibleSources as activeSources } from './merge-core.js';
+
 /* ============================================================
    iOS 净化配置生成器
    ============================================================ */
@@ -13,20 +15,6 @@ const CONFIG = {
   moduleName: 'iOS净化配置',
 };
 
-/* ---------- 合并规则 ---------- */
-const ORDER = ["General","Host","Rule","URL Rewrite","Header Rewrite",
-               "Body Rewrite","Map Local","Script","MITM"];
-
-const ADULT_KW = ["jable","xhamster","e-hentai","exhentai","pornhub","xvideos","xnxx",
-  "redtube","youporn","hanime","missav","javdb","18comic","nhentai","spankbang","91porn",
-  "hentai","javbus","avmoo","avsox","javcl","javday","fbjav","javbigo","javhdfree","javporn",
-  "javplayer","javsubbed","javfu","javgg","javleaked","javmost","javmvp","jav247","javenglish",
-  "javhahaha","jav.land","javside","doodporn","youjizz","tnaflix","beeg","porn"];
-
-const isAdult = s => { const l = s.toLowerCase(); return ADULT_KW.some(k => l.includes(k)); };
-const HOST_RE = /^-?[A-Za-z0-9*_.\-]+$/;
-
-const SAFE_LIC = ["MIT","Apache-2.0"];
 
 /* ---------- 状态 ---------- */
 let DATA = null;
@@ -39,10 +27,7 @@ let lastOutput = '';
 const $ = id => document.getElementById(id);
 
 /* ---------- 工具 ---------- */
-function eligibleSources(app) {
-  if (mode === 'safe') return app.sources.filter(s => SAFE_LIC.includes(s.lic));
-  return app.sources;
-}
+function eligibleSources(app) { return activeSources(app, mode); }
 
 function bestLic(app) {
   const es = eligibleSources(app);
@@ -53,103 +38,10 @@ function bestLic(app) {
   return '未声明';
 }
 
-function cleanHost(tok) {
-  const t = tok.trim().replace('%APPEND%','').replace('%INSERT%','').trim();
-  if (!t || t.includes('%') || !HOST_RE.test(t)) return null;
-  if (t === '*' || t === '-*' || t.includes('.') || t.startsWith('*')) return t;
-  return null;
-}
 
 /* ---------- 核心：合并 ---------- */
 function merge(apps) {
-  const secs = {}; ORDER.forEach(k => secs[k] = []);
-  const seen = {}; ORDER.forEach(k => seen[k] = new Set());
-  const hosts = [], hostSeen = new Set();
-  const args = new Map(), argsDesc = new Map();
-  const srcs = [], lics = new Set();
-  let dropped = 0, rules = 0;
-
-  for (const app of apps) {
-    for (const s of eligibleSources(app)) {
-      srcs.push(`${app.name}·${s.name}`);
-      lics.add(s.lic);
-      // 参数
-      (s.args || '').split(',').forEach(item => {
-        item = item.trim(); if (!item) return;
-        const i = item.indexOf(':');
-        const k = (i < 0 ? item : item.slice(0, i)).trim();
-        const v = i < 0 ? '' : item.slice(i + 1).trim();
-        if (k && !args.has(k)) args.set(k, v);
-      });
-      (s.argsDesc || '').split(',').forEach(item => {
-        item = item.trim(); if (!item) return;
-        const i = item.indexOf(':');
-        const k = (i < 0 ? item : item.slice(0, i)).trim();
-        const v = i < 0 ? '' : item.slice(i + 1).trim();
-        if (k && !argsDesc.has(k)) argsDesc.set(k, v);
-      });
-      // 各段
-      for (const [name, lines] of Object.entries(s.sections)) {
-        if (!secs[name]) secs[name] = [];
-        if (!seen[name]) seen[name] = new Set();
-        for (const raw of lines) {
-          const ln = raw.trim();
-          if (!ln) continue;
-          if (name === 'MITM' && ln.toLowerCase().startsWith('hostname')) continue;
-          if (isAdult(ln)) { dropped++; continue; }
-          if (seen[name].has(ln)) continue;
-          seen[name].add(ln);
-          secs[name].push(ln);
-          if (name !== 'MITM' && !ln.startsWith('#') && !ln.startsWith('//')) rules++;
-        }
-      }
-      // MITM 主机名
-      for (const ln of (s.sections.MITM || [])) {
-        if (!ln.toLowerCase().startsWith('hostname')) continue;
-        const val = ln.split('=').slice(1).join('=');
-        for (const h of val.split(',')) {
-          const c = cleanHost(h);
-          if (!c || isAdult(c)) { dropped++; continue; }
-          if (!hostSeen.has(c)) { hostSeen.add(c); hosts.push(c); }
-        }
-      }
-    }
-  }
-
-  /* ---- 拼装 ---- */
-  const L = [];
-  L.push(`#!name=${CONFIG.moduleName}`);
-  L.push(`#!desc=根据你的选择生成，覆盖 ${apps.length} 款 App 的开屏与信息流广告净化。配置步骤见使用教程。`);
-  L.push(`#!category=去广告`);
-  L.push(`#!remark=生成时间 ${new Date().toISOString().slice(0,10)}｜来源 ${srcs.length} 个模块｜许可 ${[...lics].join(' / ')}`);
-  const argsLine = [...args].filter(([k,v]) => v).map(([k,v]) => `${k}:${v}`).join(', ');
-  if (argsLine) L.push(`#!arguments=${argsLine}`);
-  const descLine = [...argsDesc].filter(([k,v]) => v).map(([k,v]) => `${k}:${v}`).join(', ');
-  if (descLine) L.push(`#!arguments-desc=${descLine}`);
-  L.push('');
-  L.push(`# ===== 已选 App（${apps.length}）=====`);
-  L.push(`# ${apps.map(a => a.name).join('、')}`);
-  L.push(`# ===== 合并来源（${srcs.length}）=====`);
-  L.push(`# ${srcs.join(' / ')}`);
-  L.push('');
-
-  for (const name of ORDER) {
-    const lines = secs[name] || [];
-    if (name === 'MITM') {
-      if (!hosts.length) continue;
-      L.push('[MITM]');
-      L.push('hostname = %APPEND% ' + hosts.join(','));
-      L.push('');
-    } else if (lines.length) {
-      L.push(`[${name}]`);
-      L.push(...lines);
-      L.push('');
-    }
-  }
-
-  const text = L.join('\n');
-  return { text, rules, hosts: hosts.length, srcs: srcs.length, lics: [...lics], dropped,
-           bytes: new Blob([text]).size };
+  return mergeRules(apps, mode, { moduleName: CONFIG.moduleName, updatedAt: DATA?.updatedAt });
 }
 
 /* ---------- 渲染 ---------- */
@@ -172,7 +64,7 @@ function renderGrid() {
       <span class="tick">✓</span>
       <span class="ico">${a.emoji}</span>
       <span class="tx"><span class="nm">${a.name}</span>
-      <span class="lic">${dis ? '当前模式不支持' : lic}</span></span>
+      <span class="lic">${dis ? (a.available === false ? '上游暂无可用规则' : '当前模式不支持') : lic}</span></span>
     </button>`;
   }).join('');
   $('grid').querySelectorAll('.app').forEach(b => {
@@ -211,6 +103,7 @@ function doGenerate() {
 
   $('out').classList.add('show');
   $('acts').style.display = 'flex';
+  $('subscribeNote').style.display = 'block';
   $('shareOut').classList.remove('show');
   $('gen').textContent = '重新生成';
 
@@ -243,8 +136,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   $('ctaBtn').href = CONFIG.ctaUrl;
 
   try {
-    const res = await fetch('data/modules.json');
+    const res = await fetch('/data/modules.json', { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     DATA = await res.json();
+    if (!Array.isArray(DATA.apps) || !DATA.apps.length) throw new Error('Invalid module data');
   } catch (e) {
     $('grid').innerHTML = '<div class="note warn">模块数据加载失败，请通过 HTTP 访问本页面。</div>';
     return;
@@ -258,6 +153,16 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (requestedApps.length === 1) activeCat = requestedApps[0].cat;
 
   renderCats(); renderGrid();
+  if ($('ruleStatus') && DATA.updatedAt) {
+    const stamp = new Date(DATA.updatedAt);
+    const date = stamp.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai', hour12: false });
+    const checked = new Date(DATA.checkedAt || DATA.updatedAt);
+    const stale = Date.now() - checked.getTime() > 7 * 24 * 60 * 60 * 1000;
+    const available = DATA.apps.filter(a => eligibleSources(a).length).length;
+    const checkDate = checked.toLocaleDateString('zh-CN', { timeZone: 'Asia/Shanghai' });
+    $('ruleStatus').textContent = `规则版本：${date} · 最近检查：${checkDate} · ${available} 款可用${stale ? ' · 超过 7 天未检查，请留意更新状态' : ''}`;
+    $('ruleStatus').className = stale ? 'note warn' : 'note';
+  }
 
   document.querySelectorAll('#modes .mode').forEach(m => {
     m.onclick = () => {
@@ -272,7 +177,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         if (!a || !eligibleSources(a).length) selected.delete(id);
       });
       renderGrid();
-      if (lastOutput) { $('out').classList.remove('show'); $('acts').style.display = 'none'; lastOutput = ''; $('gen').textContent = '生成配置模块'; }
+      if (lastOutput) { $('out').classList.remove('show'); $('acts').style.display = 'none'; $('subscribeNote').style.display = 'none'; lastOutput = ''; $('gen').textContent = '生成配置模块'; }
     };
   });
 
@@ -288,6 +193,21 @@ window.addEventListener('DOMContentLoaded', async () => {
   $('clearAll').onclick = () => { selected.clear(); renderGrid(); };
 
   $('gen').onclick = doGenerate;
+  $('subscribe').onclick = async () => {
+    const apps = currentApps();
+    if (!apps.length) return;
+    const link = new URL('/rules/latest.sgmodule', location.origin);
+    link.searchParams.set('apps', apps.map(app => app.id).sort().join(','));
+    link.searchParams.set('mode', mode);
+    try {
+      await navigator.clipboard.writeText(link.href);
+      $('subscribe').textContent = '✓ 已复制订阅地址';
+    } catch {
+      $('shareUrl').textContent = link.href;
+      $('shareOut').classList.add('show');
+    }
+    setTimeout(() => $('subscribe').textContent = '复制长期订阅地址', 1800);
+  };
 
   $('dl').onclick = () => {
     const blob = new Blob([lastOutput], { type: 'text/plain;charset=utf-8' });

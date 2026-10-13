@@ -18,11 +18,23 @@
 ```powershell
 python .\99_生成脚本\build_pages.py
 python .\99_生成脚本\validate_site.py
+python -m unittest discover -s 99_生成脚本 -p 'test_*.py'
+npm test --prefix 01_网站源码
 node --check .\01_网站源码\site\app.js
 node --check .\01_网站源码\worker\index.js
 ```
 
 GitHub Actions 会在每次推送时重新生成落地页并执行 SEO 与语法检查，防止 sitemap、canonical、目录内链或推广直链出现回归。
+
+## 持续规则维护
+
+每天北京时间 09:25，GitHub Actions 同步当前四个来源仓库的最新版本，校验 53 个模块和引用的脚本／规则文件。模块格式异常、上游下载失败或有效规则大幅减少时停止更新，保留上一份快照。检查只确认格式和链接可用，不代替 iPhone 上的实际广告效果验收。
+
+手动同步：`python 99_生成脚本/sync_rules.py`，随后运行上述检查。来源路径见 `99_生成脚本/upstreams.json`，固定提交和检查时间记录在 `site/data/rule-status.json`。上游没有有效规则的应用会标为不可用；目前腾讯视频来源只有 MITM 域名，不能当作有效去广告配置。
+
+生成器提供「复制长期订阅地址」按钮。将该地址作为远程模块导入 Shadowrocket，再使用客户端的模块更新功能，能持续获取本站发布的新快照。本地下载文件和 90 天分享链接是静态快照，不会随仓库更新。
+
+自动上线需要在 GitHub 仓库的 Actions Secrets 中配置 `CLOUDFLARE_API_TOKEN`（限该账户的 Worker 部署权限）及 `CLOUDFLARE_ACCOUNT_ID`。若未配置，规则同步和提交照常完成，部署步骤会明确报错，不会误报已上线。当前定时流程使用 Wrangler 4.149.0。
 
 ## 部署
 

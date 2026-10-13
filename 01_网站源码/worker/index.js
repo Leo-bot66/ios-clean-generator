@@ -8,6 +8,8 @@
  * KV 未配置时自动降级：/api/health 返回 available:false，前端隐藏分享按钮。
  */
 
+import { merge, eligibleSources } from '../site/merge-core.js';
+
 const ID_CHARS = 'abcdefghijkmnpqrstuvwxyz23456789';
 const MAX_BYTES = 2 * 1024 * 1024;   // KV 单值上限内，保守取 2MB
 const TTL = 60 * 60 * 24 * 90;       // 90 天过期
@@ -30,6 +32,25 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
     const hasKV = !!env.LINKS;
+
+    /* ---------- 长期订阅：每次更新读取当前部署的规则快照 ---------- */
+    if (path === '/rules/latest.sgmodule') {
+      if (!['GET', 'HEAD'].includes(request.method)) return json({ error: 'METHOD_NOT_ALLOWED' }, 405);
+      const mode = url.searchParams.get('mode') || 'full';
+      if (!['full', 'safe'].includes(mode)) return json({ error: 'INVALID_MODE' }, 400);
+      const response = await env.ASSETS.fetch(new Request(`${url.origin}/data/modules.json`));
+      if (!response.ok) return json({ error: 'RULE_DATA_UNAVAILABLE' }, 503);
+      const data = await response.json();
+      const ids = [...new Set((url.searchParams.get('apps') || '').split(',').filter(Boolean))];
+      if (ids.some(id => !data.apps.some(app => app.id === id))) return json({ error: 'UNKNOWN_APP' }, 400);
+      const apps = data.apps.filter(app => (!ids.length || ids.includes(app.id)) && eligibleSources(app, mode).length);
+      if (!apps.length) return json({ error: 'NO_AVAILABLE_RULES' }, 404);
+      const result = merge(apps, mode, { updatedAt: data.updatedAt });
+      return new Response(request.method === 'HEAD' ? null : result.text, {
+        headers: { 'content-type': 'text/plain;charset=utf-8', 'cache-control': 'no-cache',
+                   'x-robots-tag': 'noindex', 'x-rule-updated-at': data.updatedAt || '' },
+      });
+    }
 
     /* ---------- 健康检查 ---------- */
     if (path === '/api/health') {
@@ -85,6 +106,9 @@ export default {
     headers.set('permissions-policy', 'camera=(), microphone=(), geolocation=()');
 
     const type = headers.get('content-type') || '';
+    if (path.startsWith('/data/') || type.includes('text/html') || path.endsWith('.js')) {
+      headers.set('cache-control', 'no-cache');
+    }
     if (asset.ok && TEXT_TYPES.some(t => type.includes(t))) {
       const text = (await asset.text()).replaceAll('{{SITE_ORIGIN}}', url.origin);
       headers.delete('content-length');
