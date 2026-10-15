@@ -46,21 +46,14 @@ jobs:
             git commit -m '维护：同步已验证的去广告规则'
             git push origin HEAD:main
           fi
-      - name: Restore wrangler credentials from repository secret
+      - name: Deploy when Cloudflare credentials are configured
         env:
-          CF_OAUTH_CONFIG_B64: ${{ secrets.CLOUDFLARE_OAUTH_CONFIG_B64 }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          if [ -z "$CF_OAUTH_CONFIG_B64" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
-            echo '::error::Live deployment requires CLOUDFLARE_OAUTH_CONFIG_B64 and CLOUDFLARE_ACCOUNT_ID repository secrets.'
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo '::error::Rules are synchronized in GitHub, but live deployment needs two repository secrets: CLOUDFLARE_API_TOKEN (Cloudflare Dashboard -> My Profile -> API Tokens -> "Edit Cloudflare Workers" template) and CLOUDFLARE_ACCOUNT_ID. Note: a wrangler OAuth token does NOT work here; an API Token is required.'
             exit 1
           fi
-          export XDG_CONFIG_HOME="$HOME/.config"
-          mkdir -p "$XDG_CONFIG_HOME/.wrangler/config"
-          printf '%s' "$CF_OAUTH_CONFIG_B64" | base64 -d > "$XDG_CONFIG_HOME/.wrangler/config/default.toml"
-          chmod 600 "$XDG_CONFIG_HOME/.wrangler/config/default.toml"
-          echo "wrangler credentials restored ($(wc -c < "$XDG_CONFIG_HOME/.wrangler/config/default.toml") bytes)"
-      - name: Deploy to Cloudflare
-        run: |
           cd 01_网站源码
           npx --yes wrangler@4.149.0 deploy
